@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lap Time Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        input, button, select { font-size: 18px; margin: 10px; padding: 10px; }
+        .button-container { margin-top: 20px; text-align: center; }
+        .track { 
+            width: 100%; 
+            height: 20px; 
+            background: brown; 
+            margin-top: 50px; 
+            border-radius: 10px; 
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Lap Time Calculator</h1>
+    <p>Enter your total distance (meters) and total time (mm:ss format):</p>
+    <input type="number" id="totalDistance" placeholder="Total meters">
+    <input type="text" id="totalTime" placeholder="MM:SS">
+    <p>Select lap distance (meters):</p>
+    <select id="lapDistance">
+        <option value="400">400m</option>
+        <option value="200">200m</option>
+        <option value="300">300m</option>
+        <option value="800">800m</option>
+    </select>
+    <p>Or enter an abnormal track length (meters):</p>
+    <input type="number" id="abnormalTrack" placeholder="e.g., 240">
+    <div class="button-container">
+        <button onclick="calculateLapTime()">Calculate</button>
+    </div>
+    <h2 id="result"></h2>
+    <div class="track"></div>
+    <script>
+        function calculateLapTime() {
+            let distance = parseInt(document.getElementById("totalDistance").value);
+            let input = document.getElementById("totalTime").value;
+            let lapDistance = parseInt(document.getElementById("lapDistance").value);
+            let abnormalTrack = parseInt(document.getElementById("abnormalTrack").value);
+            let parts = input.split(":");
+            
+            if (parts.length !== 2 || isNaN(distance) || distance <= 0) {
+                document.getElementById("result").innerText = "Invalid input. Use correct format.";
+                return;
+            }
+            
+            let minutes = parseInt(parts[0]);
+            let seconds = parseInt(parts[1]);
+            if (isNaN(minutes) || isNaN(seconds)) {
+                document.getElementById("result").innerText = "Invalid input. Use numbers only.";
+                return;
+            }
+            
+            let totalSeconds = (minutes * 60) + seconds;
+            let selectedLapDistance = isNaN(abnormalTrack) || abnormalTrack <= 0 ? lapDistance : abnormalTrack;
+            let pacePerLap = (totalSeconds / distance) * selectedLapDistance;
+            let lapMinutes = Math.floor(pacePerLap / 60);
+            let lapSeconds = (pacePerLap % 60).toFixed(1);
+            
+            document.getElementById("result").innerText = `Each ${selectedLapDistance}m lap time: ${lapMinutes}:${lapSeconds.padStart(4, '0')}`;
+        }
+    </script>
+</body>
+</html>
